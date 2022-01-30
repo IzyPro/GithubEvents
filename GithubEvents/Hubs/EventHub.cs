@@ -42,47 +42,5 @@ namespace GithubEvents.Hubs
                 }
             }
         }
-        public async IAsyncEnumerable<int> Counter(
-        int count,
-        int delay,
-        [EnumeratorCancellation]
-        CancellationToken cancellationToken)
-        {
-            for (var i = 0; i < count; i++)
-            {
-                // Check the cancellation token regularly so that the server will stop
-                // producing items if the client disconnects.
-                cancellationToken.ThrowIfCancellationRequested();
-
-                yield return i;
-
-                // Use the cancellationToken in other APIs that accept cancellation
-                // tokens so the cancellation can flow down to them.
-                await Task.Delay(delay, cancellationToken);
-            }
-        }
-        public ChannelReader<int> DelayCounter(int delay)
-        {
-            var channel = Channel.CreateUnbounded<int>();
-
-            _ = WriteItems(channel.Writer, 20, delay);
-
-            return channel.Reader;
-        }
-
-        private async Task WriteItems(ChannelWriter<int> writer, int count, int delay)
-        {
-            for (var i = 0; i < count; i++)
-            {
-                await writer.WriteAsync(i);
-                await Task.Delay(delay);
-            }
-
-            writer.TryComplete();
-        }
-        public async Task SendMessage(string user, string message)
-        {
-            await Clients.All.SendAsync("ReceiveMessage", user, message);
-        }
     }
 }
