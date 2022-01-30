@@ -19,6 +19,7 @@ namespace GithubEvents.Hubs
         }
         public async IAsyncEnumerable<EventModel> EventsStream(int delay, [EnumeratorCancellation] CancellationToken cancellationToken, int? pageNumber = 1)
         {
+            //calls the get service with the fetch events route and query parameters 
             var response = await _httpService.getHttp(RouteHelper.getEvents, $"page={pageNumber}&per_page={int.MaxValue}");
             if(response != null)
             {
@@ -34,6 +35,7 @@ namespace GithubEvents.Hubs
                     {
 
                     }
+                    //Stream each event to the client individually
                     foreach(var e in events)
                     {
                         yield return e;
