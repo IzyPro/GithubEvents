@@ -1,6 +1,6 @@
 ﻿"use strict";
 
-
+//This ensures wait time for the client and server to be connected before streaming
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -10,10 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 
+//Creates a connection to the server hub
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/EventHub")
     .withAutomaticReconnect()
     .build();
+
+//OnClick, streaming starts
 document.getElementById("streamButton").addEventListener("click", (event) => __awaiter(this, void 0, void 0, function* () {
     try {
         connection.stream("EventsStream", 3000, 1)
